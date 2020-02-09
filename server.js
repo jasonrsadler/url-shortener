@@ -39,7 +39,12 @@ app.get("/api/hello", function (req, res) {
 });
 
 app.post("/api/shorturl/new", function (req, res) {
-  let url = new urlModel({url: req.body.url})
+  let newUrl
+  try {
+    newUrl = new URL(req.body.url)
+  } catch {
+    res.json({error: 'Invalid URL'})
+  }
   urlModel.findOne({url: req.body.url}, function (err, result) {
     if (!result) {
       urlModel.findOne().sort({shortUrl:-1}).limit(1).exec(function (err, idResult) {
