@@ -11,7 +11,7 @@ var app = express();
 
 // Basic Configuration 
 var port = process.env.PORT || 3000;
-
+console.log(process.env.MONGOLAB_URI)
 /** this project needs a db !! **/ 
 mongoose.connect(process.env.MONGOLAB_URI, { useMongoClient: true});
 
