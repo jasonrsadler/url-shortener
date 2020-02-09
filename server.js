@@ -38,8 +38,24 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+app.get("/api/shorturl/:shortUrl", function (req, res) {
+  console.log(req.params.shortUrl)
+  urlModel.findOne({shortUrl: req.params.shortUrl}, function (err, result) {
+    if (!result) {
+      res.json({error: 'Shortened does not exist'})
+    } else {
+      res.redirect(result.url)
+    }
+  })
+})
+
 app.post("/api/shorturl/new", function (req, res) {
   let newUrl
+  try {
+    newUrl = new URL(req.body.url)
+  } catch {
+    res.json({error: 'Invalid URL'})
+  }
   urlModel.findOne({url: req.body.url}, function (err, result) {
     if (!result) {
       urlModel.findOne().sort({shortUrl:-1}).limit(1).exec(function (err, idResult) {
