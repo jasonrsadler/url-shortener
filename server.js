@@ -14,10 +14,10 @@ var port = process.env.PORT || 3000;
 
 /** this project needs a db !! **/ 
 mongoose.connect(process.env.MONGOLAB_URI, { useMongoClient: true});
-
+let shortUrl = 1
 var Schema = mongoose.Schema;
 var urlSchema = new Schema({
-  shortId: Number,
+  shortUrl: Number,
   url: String
 })
 var urlModel = mongoose.model('Url', urlSchema)
@@ -41,15 +41,17 @@ app.get("/api/hello", function (req, res) {
 
 app.post("/api/shorturl/new", function (req, res) {
   let url = new urlModel({url: req.body.url})
-  urlModel.find({url: req.body.url}, function (err, result) {
-    if (result.length === 0) {
-      urlModel.create({url: req.body.url}, function (err, result) {
+  urlModel.findOne({url: req.body.url}, function (err, result) {
+    if (!result) {
+      urlModel.create({url: req.body.url, shortUrl: shortUrl}, function (err, result) {
         if (err) return err;
         console.log(result);
+        shortUrl++
         res.json({success:true})
       }) 
     } else {
-      
+      console.log(result)
+      res.json({original_url: req.body.url, short_url: result.shortUrl})
     }
   })
 })
