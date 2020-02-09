@@ -37,6 +37,7 @@ app.post("/api/shorturl/new/:url", function (req, res) {
 })
 
 app.post("/api/shorturl/new", function (req, res) {
+  console.log(req.body.url)
   res.json({result: 'hi'})
 })
 
