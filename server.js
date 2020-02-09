@@ -11,9 +11,19 @@ var app = express();
 
 // Basic Configuration 
 var port = process.env.PORT || 3000;
-console.log(process.env.MONGOLAB_URI)
+
 /** this project needs a db !! **/ 
 mongoose.connect(process.env.MONGOLAB_URI, { useMongoClient: true});
+
+const MongoClient = require('mongodb').MongoClient;
+const uri = process.env.MONGOLAB_URI;
+const client = new MongoClient(uri, { useNewUrlParser: true });
+client.connect(err => {
+  const collection = client.db("test").collection("test");
+  // perform actions on the collection object
+  client.close();
+});
+
 var Schema = mongoose.Schema;
 var urlSchema = new Schema({
   url: String,
@@ -43,8 +53,8 @@ app.get("/api/hello", function (req, res) {
 app.post("/api/shorturl/new", function (req, res) {
   console.log(req.body.url)
   
-  Url.findOne({url: req.body.url}, function (err, result) {
-    if (err) return res.json({result: 'someting wong'});
+  Url.findOne({'url': req.body.url}, 'url shortId', function (err, result) {
+    if (err) return ;
     console.log(result);
   })
 })
