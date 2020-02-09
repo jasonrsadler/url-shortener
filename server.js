@@ -19,7 +19,7 @@ var Schema = mongoose.Schema;
 var urlSchema = new Schema({
   url: String
 })
-var Url = mongoose.model('Url', urlSchema)
+var urlModel = mongoose.model('Url', urlSchema)
 app.use(cors());
 app.use(bodyParser.urlencoded({extended: 'false'}));
 app.use(bodyParser.json());
@@ -40,8 +40,8 @@ app.get("/api/hello", function (req, res) {
 
 app.post("/api/shorturl/new", function (req, res) {
   console.log(req.body.url)
-  let url = new Url({url: req.body.url})
-  Url.create(function (err, result) {
+  let url = new urlModel({url: req.body.url})
+  urlModel.create({url: req.bodyfunction (err, result) {
     if (err) return err;
     console.log(result);
     res.json({success:true})
