@@ -17,8 +17,7 @@ mongoose.connect(process.env.MONGOLAB_URI, { useMongoClient: true});
 
 var Schema = mongoose.Schema;
 var urlSchema = new Schema({
-  url: String,
-  shortId: Number
+  url: String
 })
 var Url = mongoose.model('Url', urlSchema)
 app.use(cors());
@@ -41,10 +40,11 @@ app.get("/api/hello", function (req, res) {
 
 app.post("/api/shorturl/new", function (req, res) {
   console.log(req.body.url)
-  
-  Url.findOne({'url': req.body.url}, 'url shortId', function (err, result) {
-    if (err) return ;
+  let url = new Url({url: req.body.url})
+  Url.create(function (err, result) {
+    if (err) return err;
     console.log(result);
+    res.json({success:true})
   })
 })
 
