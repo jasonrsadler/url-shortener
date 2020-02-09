@@ -14,7 +14,6 @@ var port = process.env.PORT || 3000;
 
 /** this project needs a db !! **/ 
 mongoose.connect(process.env.MONGOLAB_URI, { useMongoClient: true});
-let shortUrl = 1
 var Schema = mongoose.Schema;
 var urlSchema = new Schema({
   shortUrl: Number,
@@ -43,12 +42,14 @@ app.post("/api/shorturl/new", function (req, res) {
   let url = new urlModel({url: req.body.url})
   urlModel.findOne({url: req.body.url}, function (err, result) {
     if (!result) {
-      urlModel.create({url: req.body.url, shortUrl: shortUrl}, function (err, result) {
-        if (err) return err;
-        console.log(result);
-        shortUrl++
-        res.json({success:true})
-      }) 
+      urlModel.find('shortUrl').sort({shortUrl:-1}).limit(1).exec(function (err, idResult) {
+        console.log('id result: ' + idResult)
+        urlModel.create({url: req.body.url, shortUrl: idResult.shortUrl}, function (err, result) {
+          if (err) return err;
+          console.log(idResult);
+          res.json({success: true})
+        }) 
+      })
     } else {
       console.log(result)
       res.json({original_url: req.body.url, short_url: result.shortUrl})
