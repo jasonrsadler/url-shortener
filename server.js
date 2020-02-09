@@ -31,6 +31,14 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+app.post("/api/shorturl/new/:url", function (req, res) {
+  console.log(req.body.url)
+  res.json({url: req.body.url})
+})
+
+app.post("/api/shorturl/new", function (req, res) {
+  res.json({result: 'hi'})
+})
 
 app.listen(port, function () {
   console.log('Node.js listening ...');
