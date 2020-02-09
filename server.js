@@ -14,7 +14,12 @@ var port = process.env.PORT || 3000;
 console.log(process.env.MONGOLAB_URI)
 /** this project needs a db !! **/ 
 mongoose.connect(process.env.MONGOLAB_URI, { useMongoClient: true});
-
+var Schema = mongoose.Schema;
+var urlSchema = new Schema({
+  url: String,
+  shortId: Number
+})
+var Url = mongoose.model('Url', urlSchema)
 app.use(cors());
 app.use(bodyParser.urlencoded({extended: 'false'}));
 app.use(bodyParser.json());
@@ -37,7 +42,11 @@ app.get("/api/hello", function (req, res) {
 
 app.post("/api/shorturl/new", function (req, res) {
   console.log(req.body.url)
-  res.json({result: 'hi'})
+  
+  Url.findOne({url: req.body.url}, function (err, result) {
+    if (err) return res.json({result: 'someting wong'});
+    console.log(result);
+  })
 })
 
 app.listen(port, function () {
