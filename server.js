@@ -3,6 +3,7 @@
 var express = require('express');
 var mongo = require('mongodb');
 var mongoose = require('mongoose');
+var bodyParser = require('body-parser')
 
 var cors = require('cors');
 
@@ -12,10 +13,11 @@ var app = express();
 var port = process.env.PORT || 3000;
 
 /** this project needs a db !! **/ 
-// mongoose.connect(process.env.MONGOLAB_URI);
+mongoose.connect(process.env.MONGOLAB_URI, { useMongoClient: true});
 
 app.use(cors());
-
+app.use(bodyParser.urlencoded({extended: 'false'}));
+app.use(bodyParser.json());
 /** this project needs to parse POST bodies **/
 // you should mount the body-parser here
 
@@ -31,10 +33,7 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
-app.post("/api/shorturl/new/:url", function (req, res) {
-  console.log(req.body.url)
-  res.json({url: req.body.url})
-})
+
 
 app.post("/api/shorturl/new", function (req, res) {
   console.log(req.body.url)
