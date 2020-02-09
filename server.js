@@ -13,7 +13,7 @@ var app = express();
 var port = process.env.PORT || 3000;
 
 /** this project needs a db !! **/ 
-mongoose.connect(process.env.MONGOLAB_URI, { useMongoClient: true});
+mongoose.connect(process.env.MONGOLAB_URI);
 var Schema = mongoose.Schema;
 var urlSchema = new Schema({
   shortUrl: Number,
@@ -42,9 +42,9 @@ app.post("/api/shorturl/new", function (req, res) {
   let url = new urlModel({url: req.body.url})
   urlModel.findOne({url: req.body.url}, function (err, result) {
     if (!result) {
-      urlModel.find('shortUrl').sort({shortUrl:-1}).limit(1).exec(function (err, idResult) {
-        console.log('id result: ' + idResult)
-        urlModel.create({url: req.body.url, shortUrl: idResult.shortUrl}, function (err, result) {
+      urlModel.findOne().sort({shortUrl:-1}).limit(1).exec(function (err, idResult) {
+        console.log('id result: ' + idResult.shortUrl)
+        urlModel.create({url: req.body.url, shortUrl: idResult.shortUrl + 1}, function (err, result) {
           if (err) return err;
           console.log(idResult);
           res.json({success: true})
