@@ -17,6 +17,7 @@ mongoose.connect(process.env.MONGOLAB_URI, { useMongoClient: true});
 
 var Schema = mongoose.Schema;
 var urlSchema = new Schema({
+  shortId: Number,
   url: String
 })
 var urlModel = mongoose.model('Url', urlSchema)
@@ -39,12 +40,17 @@ app.get("/api/hello", function (req, res) {
 });
 
 app.post("/api/shorturl/new", function (req, res) {
-  console.log(req.body.url)
   let url = new urlModel({url: req.body.url})
-  urlModel.create({url: req.bodyfunction (err, result) {
-    if (err) return err;
-    console.log(result);
-    res.json({success:true})
+  urlModel.find({url: req.body.url}, function (err, result) {
+    if (result.length === 0) {
+      urlModel.create({url: req.body.url}, function (err, result) {
+        if (err) return err;
+        console.log(result);
+        res.json({success:true})
+      }) 
+    } else {
+      
+    }
   })
 })
 
